@@ -44,3 +44,19 @@ function opening() {
         }
     });
 }
+
+// View product function
+function viewProduct() {
+    console.log("\x1b[35m", "\n\n=_=_=_=_=_=_=_=_=_Products for Sale=_=_=_=_=_=_=_=_=_\n\n");
+    var query = "select * from products";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+
+            console.log("Item id: " + res[i].item_id + " || Item Name: " + res[i].product_name + " || Item Price: " + res[i].price + " || Quantity: " + res[i].stock_quantity + "\n");
+
+        }
+        opening();
+    });
+}
+
