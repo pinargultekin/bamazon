@@ -36,12 +36,12 @@ function selectQuery() {
         {
             name: "productid",
             type: "number",
-            message: "Please enter the ID of the product you would like to buy: "
+            message: "\nPlease enter the ID of the product you would like to buy: "
         },
         {
             name: "quantity",
             type: "number",
-            message: "Please enter how many units of product you would like to buy: "
+            message: "\nPlease enter how many units of product you would like to buy: "
         }
     ]).then(function (input) {
         var item = input.productid;
@@ -53,24 +53,24 @@ function selectQuery() {
             if (err) throw err;
 
             if (res.length === 0) {
-                console.log("Invalid ID. Plese enter a valid item ID.");
-                opening();
+                console.log("\nInvalid ID. Plese enter a valid item ID.");
+                connection.end();
             } else {
                 var itemInfo = res[0];
 
                 if (quantity <= itemInfo.stock_quantity) {
-                    console.log("Item in stock!");
+                    console.log("\n\nItem in stock!");
 
 
                         inquirer.prompt({
                             name: "confirm",
                             type: "confirm",
-                            message: "Your total is $" + (itemInfo.price * quantity) + ". Would you like to continue?",
+                            message: "\n\nYour total is $" + (itemInfo.price * quantity) + ". Would you like to continue?",
                             default: true
                         }).then(function (response) {
                             if (response.confirm) {
                                 
-                                console.log("Your order is being processed. Thank you for your purchase.");
+                                console.log("\n\nYour order is being processed. Thank you for your purchase.");
 
                                 var updateStock = "update products set stock_quantity=" + (itemInfo.stock_quantity - quantity) + " where item_id=" + item;
                                 connection.query(updateStock, function (err, res) {
