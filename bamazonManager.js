@@ -60,3 +60,16 @@ function viewProduct() {
     });
 }
 
+// Low inventory function
+function lowInventory() {
+    console.log("\x1b[33m", "\n\n=_=_=_=_=_=_=_=_=_Low Inventory=_=_=_=_=_=_=_=_=_\n\n");
+    var query = "select * from products where stock_quantity<5";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        for (var j = 0; j < res.length; j++) {
+            console.log("Item id: " + res[j].item_id + " || Item Name: " + res[j].product_name + " || Item Price: " + res[j].price + " || Quantity: " + res[j].stock_quantity + "\n");
+        }
+        opening();
+    });
+}
+
