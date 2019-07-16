@@ -73,3 +73,45 @@ function lowInventory() {
     });
 }
 
+// Add to inventory function
+function addInventory() {
+    inquirer.registerPrompt('number', require('inquirer-number-plus'));
+    inquirer.prompt(
+        {
+            name: "productID",
+            type: "number",
+            message: "Please enter a valid item ID to update the inventory."
+        })
+        .then(function (input) {
+            var item = input.productID;
+            var query = "select * from products where ?";
+
+            connection.query(query, { item_id: item }, function (err, res) {
+                if (err) throw err;
+                if (res.length === 0) {
+                    console.log("\nInvalid ID. Plese enter a valid item ID.");
+                    addInventory();
+                } else {
+                    console.log("Item id: " + res[0].item_id + " || Item Name: " + res[0].product_name + " || Item Price: " + res[0].price + " || Quantity: " + res[0].stock_quantity + "\n");
+                    inquirer.prompt({
+
+                        name: "quantity",
+                        type: "number",
+                        message: "How many item would you like to add?"
+                    })
+                        .then(function (answer) {
+                            var quantity = answer.quantity;
+                            var updateQuery = "update products set stock_quantity=" + (res[0].stock_quantity + quantity) + " where item_id=" + item;
+
+                            connection.query(updateQuery, function (err, res) {
+                                if (err) throw err;
+                                console.log("\nInventory updated! " + quantity + " item added.\n\n");
+                                viewProduct();
+                            });
+                        })
+                }
+            });
+
+        });
+}
+
