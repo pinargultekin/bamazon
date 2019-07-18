@@ -68,3 +68,28 @@ function sales() {
     })
 }
 
+function newDepartment(){
+    inquirer.registerPrompt('number', require('inquirer-number-plus'));
+    inquirer.prompt([
+        {
+            name: "depName",
+            type: "input",
+            message: "Please enter the department name."
+        },
+        {
+            name: "cost",
+            type: "number",
+            message: "Please enter overhead cost."
+        }
+    ]).then(function (input){
+        connection.query("insert into departments set ?",
+        {
+            department_name: input.depName,
+            over_head_cost: input.cost
+        }, function(err){
+            if(err) throw err;
+            console.log("\nNew department is created successfully!");
+            sales();
+        })
+    })
+}
