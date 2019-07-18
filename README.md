@@ -56,15 +56,4 @@ The application is built with;
 <a name="display"></a>
 ## Application Display
 
-### `node bamazonCustomer`
-<img src="assets/images/ezgif.com-video-to-gif.gif" alt="App display">
-<br>
-<br>
-
-### `node bamazonManager`
-<img src="assets/images/ezgif.com-video-to-gif(1).gif" alt="App display">
-<br>
-<br>
-
-### `node bamazonSupervisor`
-<img src="assets/images/ezgif.com-video-to-gif.gif(2)" alt="App display">
+https://youtu.be/GlTcSjp3bdY
