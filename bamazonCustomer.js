@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require("cli-table");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -17,14 +18,25 @@ connection.connect(function (err) {
 
 function opening() {
 
-    console.log("\x1b[32m","\n\n=_=_=_=_=_=_=_=_=_Welcome to Bamazon!=_=_=_=_=_=_=_=_=_")
-    console.log("\n\nHere is a list of Bamazon products: \n");
+    console.log("\x1b[32m","\n\n          =_=_=_=_=_=_=_=_=_WELCOME TO BAMAZON!_=_=_=_=_=_=_=_=_=_")
+    console.log("\n_=_=_=_=_=_=_=_=_=_=_=_=_=_BAMAZON PRODUCT LIST_=_=_=_=_=_=_=_=_=_=_=_=_");
+
+    var itemTable = new Table ({
+        head: ["Item ID", "Item Name", "Price"],
+        colWidths: [15, 40, 15]
+    });
     var query = "select item_id, product_name, price from products";
     connection.query(query, function (err, res) {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
-            console.log("Item id: " + res[i].item_id + " || Item Name: " + res[i].product_name + " || Item Price: " + res[i].price + "\n");
+            var itemID= res[i].item_id;
+            var itemName = res[i].product_name;
+            var itemPrice= res[i].price;
+            itemTable.push([itemID, itemName, itemPrice]);
+            //console.log("Item id: " + res[i].item_id + " || Item Name: " + res[i].product_name + " || Item Price: " + res[i].price + "\n");
+            
         }
+        console.log(itemTable.toString());
         selectQuery();
     });
 }
@@ -59,7 +71,7 @@ function selectQuery() {
                 var itemInfo = res[0];
 
                 if (quantity <= itemInfo.stock_quantity) {
-                    console.log("\n\nItem in stock!");
+                    console.log("\x1b[33m","\n\nItem in stock!");
 
 
                         inquirer.prompt({
@@ -70,23 +82,23 @@ function selectQuery() {
                         }).then(function (response) {
                             if (response.confirm) {
                                 
-                                console.log("\n\nYour order is being processed. Thank you for your purchase.");
+                                console.log("\x1b[32m","\n\nYour order is being processed. Thank you for your purchase.");
 
-                                var updateStock = "update products set stock_quantity=" + (itemInfo.stock_quantity - quantity) + " where item_id=" + item;
+                                var updateStock = "update products set stock_quantity=" + (itemInfo.stock_quantity - quantity)+", product_sale="+((itemInfo.product_sale + quantity) * itemInfo.price) + " where item_id=" + item;
                                 connection.query(updateStock, function (err, res) {
                                     if (err) throw err;
                                 });
                                 connection.end();
                             }else{
-                                console.log("Thank you!");
+                                console.log("\x1b[36m","Thank you!");
                                 connection.end();
                             }
                         })
                     }
                  else{
-                    console.log("\n\nUnsufficient item. There are only "+itemInfo.stock_quantity+ " " + itemInfo.product_name);
+                    console.log("\x1b[31m" ,"\n\nUnsufficient item. There are only "+itemInfo.stock_quantity+ " " + itemInfo.product_name);
                     console.log("Please update unit of the product.");
-                    opening();
+                    selectQuery();
                 }
             }
         })

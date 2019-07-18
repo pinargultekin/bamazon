@@ -1,6 +1,7 @@
 //Requirements
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require("cli-table");
 
 //Setting connection
 var connection = mysql.createConnection({
@@ -47,28 +48,49 @@ function opening() {
 
 // View product function
 function viewProduct() {
-    console.log("\x1b[35m", "\n\n=_=_=_=_=_=_=_=_=_Products for Sale=_=_=_=_=_=_=_=_=_\n\n");
+    console.log("\x1b[35m", "\n\n_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_PRODUCTS FOR SALE_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_");
+    var itemTable = new Table ({
+        head: ["Item ID", "Item Name", "Price", "Quantity", "Sales"],
+        colWidths: [10, 40, 10, 10, 10]
+    });
     var query = "select * from products";
     connection.query(query, function (err, res) {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
-
-            console.log("Item id: " + res[i].item_id + " || Item Name: " + res[i].product_name + " || Item Price: " + res[i].price + " || Quantity: " + res[i].stock_quantity + "\n");
-
+            var itemID= res[i].item_id;
+            var itemName = res[i].product_name;
+            var itemPrice= res[i].price;
+            var itemQuantity= res[i].stock_quantity;
+            var itemSale = res[i].product_sale;
+            itemTable.push([itemID, itemName, itemPrice, itemQuantity, itemSale]);
+            //console.log("Item id: " + res[i].item_id + " || Item Name: " + res[i].product_name + " || Item Price: " + res[i].price + " || Quantity: " + res[i].stock_quantity + "\n");
         }
+        console.log(itemTable.toString());
         opening();
     });
 }
 
 // Low inventory function
 function lowInventory() {
-    console.log("\x1b[33m", "\n\n=_=_=_=_=_=_=_=_=_Low Inventory=_=_=_=_=_=_=_=_=_\n\n");
+    console.log("\x1b[33m", "\n\n_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_LOW INVENTORY_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_");
+    var itemTable = new Table ({
+        head: ["Item ID", "Item Name", "Price", "Quantity", "Sales"],
+        colWidths: [10, 40, 10, 10, 10]
+    });
     var query = "select * from products where stock_quantity<5";
     connection.query(query, function (err, res) {
         if (err) throw err;
-        for (var j = 0; j < res.length; j++) {
-            console.log("Item id: " + res[j].item_id + " || Item Name: " + res[j].product_name + " || Item Price: " + res[j].price + " || Quantity: " + res[j].stock_quantity + "\n");
+        for (var i = 0; i < res.length; i++) {
+            
+                var itemID= res[i].item_id;
+                var itemName = res[i].product_name;
+                var itemPrice= res[i].price;
+                var itemQuantity= res[i].stock_quantity;
+                var itemSale = res[i].product_sale;
+                itemTable.push([itemID, itemName, itemPrice, itemQuantity, itemSale]);
+            //console.log("Item id: " + res[j].item_id + " || Item Name: " + res[j].product_name + " || Item Price: " + res[j].price + " || Quantity: " + res[j].stock_quantity + "\n");
         }
+        console.log(itemTable.toString());
         opening();
     });
 }
@@ -147,7 +169,8 @@ function addNew () {
             product_name: input.productName,
             department_name: input.department,
             price: input.price,
-            stock_quantity: input.quantity
+            stock_quantity: input.quantity,
+            product_sale: 0
         }, function(err){
             if(err) throw err;
             console.log("\nNew product is added to the inventory.\n\n");
