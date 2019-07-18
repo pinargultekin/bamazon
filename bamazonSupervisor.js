@@ -22,13 +22,13 @@ function opening() {
             type: "list",
             message: "What would you like to do?",
             choices: [
-                "* View Product Sales by Depratment",
+                "* View Product Sales by Department",
                 "* Create New Department",
                 "* Exit"
             ]
         }
     ]).then(function (answer) {
-        if (answer.menu === "* View Product Sales by Depratment") {
+        if (answer.menu === "* View Product Sales by Department") {
             sales();
         } else if (answer.menu === "* Create New Department") {
             newDepartment();
